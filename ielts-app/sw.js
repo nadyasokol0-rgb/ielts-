@@ -1,5 +1,5 @@
 /* Offline mode: app files are cached; updates come from the network when available. */
-const CACHE = 'ielts-trainer-v2';
+const CACHE = 'ielts-trainer-v3';
 const CORE = ['./', './index.html', './app.js', './content.js', './manifest.json', './icon-192.png', './icon-512.png', './apple-touch-icon.png',
   './fonts/bricolage.woff2', './fonts/instrument-serif.woff2', './fonts/instrument-serif-italic.woff2', './fonts/onest-latin.woff2', './fonts/onest-cyrillic.woff2'];
 

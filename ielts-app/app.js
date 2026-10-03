@@ -23,6 +23,9 @@ const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 
 function plural(n, one, few, many) { return Math.abs(n) === 1 ? one : (many || few); }
 const fmtLong = s => parseDate(s).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 const fmtShort = s => parseDate(s).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+const fmtDay = s => parseDate(s).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
+const monthName = (y, m) => new Date(y, m, 1).toLocaleDateString('en-GB', { month: 'long' });
+function addMonths(s, n) { const d = parseDate(s); return todayStr(new Date(d.getFullYear(), d.getMonth() + n, 1)); }
 function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); const t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
 const wordCount = t => (String(t).trim().match(/\S+/g) || []).length;
 function fmtClock(ms) { const over = ms < 0; const s = Math.floor(Math.abs(ms) / 1000); return (over ? '+' : '') + pad(Math.floor(s / 60)) + ':' + pad(s % 60); }
@@ -40,7 +43,16 @@ const IC = {
   list: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6.5h10M9.5 12h10M9.5 17.5h10M4.5 6.5h.01M4.5 12h.01M4.5 17.5h.01"/></svg>',
   pen: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4.5L19.5 9a2.1 2.1 0 0 0-3-3L5.5 17z"/><path d="M14.5 8l3 3"/></svg>',
   link: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>',
-  gear: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7"/></svg>'
+  gear: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7"/></svg>',
+  prev: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>',
+  next: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>',
+  cal: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>',
+  headph: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 15v-3a7.5 7.5 0 0 1 15 0v3"/><rect x="3.5" y="14" width="4.5" height="6.5" rx="1.8"/><rect x="16" y="14" width="4.5" height="6.5" rx="1.8"/></svg>',
+  doc: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 3.5h7.5l4 4v13h-11.5z"/><path d="M13.5 3.5v4.5h4.5M9.5 12.5h6M9.5 16h6"/></svg>',
+  mic: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3.5" width="6" height="11" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v2.5"/></svg>',
+  clock: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7.5"/><path d="M12 9.5V13l2.5 2M9.5 3h5"/></svg>',
+  refresh: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 11a7.5 7.5 0 0 0-13.4-4.3L4.5 8.5M4.5 4v4.5H9M4.5 13a7.5 7.5 0 0 0 13.4 4.3l1.6-1.8M19.5 20v-4.5H15"/></svg>',
+  layers: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l8.5 4.5L12 13 3.5 8.5z"/><path d="M3.5 12.5L12 17l8.5-4.5M3.5 16.5L12 21l8.5-4.5"/></svg>'
 };
 /* Stickers (decorative, kept away from text) */
 const ST = {
@@ -77,9 +89,9 @@ try { localStorage.setItem('__t', '1'); localStorage.removeItem('__t'); } catch 
 function defaults() {
   return {
     v: 1,
-    settings: { examDate: '', target: 6.5, newPerDay: 10, weekGoal: 4, dir: 'en-ru', lastSrc: '', lastUnit: '' },
+    settings: { examDate: '', target: 6.5, newPerDay: 10, weekGoal: 4, dir: 'en-ru', lastSrc: '', lastUnit: '', weekSets: null, shuffleWeeks: true, planStart: '', planMonths: 12 },
     words: [], grammar: {}, essays: [], drafts: {}, speaking: {}, tests: [],
-    books: {}, bookTouched: {}, activity: {}, starterAdded: false
+    books: {}, bookTouched: {}, activity: {}, plan: {}, starterAdded: false
   };
 }
 function newWord(en, ru, ex, src, unit, note) {
@@ -90,7 +102,8 @@ function hydrate(obj) {
   const out = Object.assign(d, obj || {});
   out.settings = Object.assign(defaults().settings, (obj && obj.settings) || {});
   ['words', 'essays', 'tests'].forEach(k => { if (!Array.isArray(out[k])) out[k] = []; });
-  ['grammar', 'drafts', 'speaking', 'books', 'bookTouched', 'activity'].forEach(k => { if (!out[k] || typeof out[k] !== 'object') out[k] = {}; });
+  ['grammar', 'drafts', 'speaking', 'books', 'bookTouched', 'activity', 'plan'].forEach(k => { if (!out[k] || typeof out[k] !== 'object') out[k] = {}; });
+  if (!out.settings.planStart) out.settings.planStart = todayStr().slice(0, 8) + '01';
   if (!out.starterAdded) { C.starterWords.forEach(w => out.words.push(newWord(w.en, w.ru, w.ex, STARTER, ''))); out.starterAdded = true; }
   return out;
 }
@@ -111,7 +124,11 @@ function getBook(id) { return PACK && PACK.books.find(b => b.id === id); }
 function getUnit(b, n) { return b && b.units.find(u => String(u.n) === String(n)); }
 
 function act(kind, n) { const t = todayStr(); const a = D.activity[t] || (D.activity[t] = {}); a[kind] = (a[kind] || 0) + (n || 1); save(); }
-function activeDay(day) { const a = D.activity[day]; return !!a && Object.keys(a).some(k => k !== 'newSeen' && a[k] > 0); }
+function activeDay(day) {
+  const a = D.activity[day], p = D.plan[day];
+  return (!!a && Object.keys(a).some(k => k !== 'newSeen' && a[k] > 0)) || (!!p && Object.keys(p).some(k => p[k]));
+}
+if (C.grammarOrder) C.grammar.sort((a, b) => C.grammarOrder.indexOf(a.id) - C.grammarOrder.indexOf(b.id));
 
 /* ================= Telegram ================= */
 const inTg = /tgWebApp/i.test(location.hash + location.search);
@@ -157,7 +174,7 @@ function ask(msg) {
 }
 
 /* ================= Navigation ================= */
-const S = { tab: 'today', stack: [], wq: '', wsrc: '', wlimit: 200, examSeg: 'writing', wtask: 2, spSeg: 'p2' };
+const S = { tab: 'today', stack: [], wq: '', wsrc: '', wlimit: 200, examSeg: 'writing', wtask: 2, spSeg: 'p2', calMonth: '', calSel: '' };
 let ignorePop = false;
 function view() { return S.stack[S.stack.length - 1] || { name: 'root' }; }
 function go(v) {
@@ -316,6 +333,113 @@ function queue() {
 function shortSrc(w) { return (w.src || '') + (w.unit ? ' · ' + w.unit : ''); }
 function dictSet() { const s = new Set(); D.words.forEach(w => s.add(w.en.toLowerCase())); return s; }
 
+/* ================= Study plan (calendar) ================= */
+/* The same 7 day-sets every week, shuffled into a new order each week (deterministic, so the plan never jumps around). */
+const PARTS = {
+  listening: { t: 'Listening', s: 'Listen', icon: 'headph', d: 'One Engnovate test or two sections, then log your score' },
+  reading: { t: 'Reading', s: 'Read', icon: 'doc', d: 'One passage in 20 minutes or a full Engnovate test' },
+  task1: { t: 'Writing Task 1', s: 'Task 1', icon: 'pen', d: 'One report in 20 minutes, then the checklist' },
+  task2: { t: 'Writing Task 2', s: 'Task 2', icon: 'pen', d: 'One essay in 40 minutes, then the checklist' },
+  speaking: { t: 'Speaking', s: 'Speak', icon: 'mic', d: 'Part 1 questions and one cue card, recorded' },
+  vocab: { t: 'Vocabulary', s: 'Vocab', icon: 'book', d: 'The next unit in Vocabulary in Use' },
+  pv: { t: 'Phrasal verbs', s: 'Phr. v.', icon: 'layers', d: 'The next unit in Phrasal Verbs in Use' },
+  grammar: { t: 'Grammar', s: 'Gram', icon: 'list', d: 'Your current topic and its test' },
+  mock: { t: 'Practice test', s: 'Test', icon: 'clock', d: 'A full section under exam timing' },
+  review: { t: 'Review', s: 'Review', icon: 'refresh', d: 'Redo mistakes, reread your last essay, practise weak words' }
+};
+const PART_IDS = Object.keys(PARTS);
+const DEFAULT_WEEK = [['listening', 'vocab'], ['reading', 'grammar'], ['task1', 'pv'], ['speaking', 'vocab'], ['task2', 'grammar'], ['listening', 'reading'], ['review']];
+const DAY_NAMES = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+function weekSets() {
+  const w = D.settings.weekSets;
+  if (Array.isArray(w) && w.length === 7) return w.map(x => (Array.isArray(x) ? x : []).filter(p => PARTS[p]));
+  return DEFAULT_WEEK.map(x => x.slice());
+}
+function planAnchor() { return weekStart(D.settings.planStart || todayStr()); }
+function planEnd() { return addDays(addMonths(D.settings.planStart || todayStr(), +D.settings.planMonths || 12), -1); }
+function rng(seed) {
+  let a = seed >>> 0;
+  return () => { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+}
+let planCache = { key: '', orders: [] };
+function weekOrder(k) {
+  const ident = [0, 1, 2, 3, 4, 5, 6];
+  if (D.settings.shuffleWeeks === false) return ident;
+  const sets = weekSets();
+  const key = JSON.stringify(sets) + '|' + planAnchor();
+  if (planCache.key !== key) planCache = { key: key, orders: [] };
+  const O = planCache.orders;
+  const share = (a, b) => sets[a].some(p => sets[b].indexOf(p) >= 0);
+  while (O.length <= k) {
+    const i = O.length, prev = O[i - 1];
+    let best = null, bestBad = 1e9;
+    for (let t = 0; t < 400; t++) {
+      const r = rng(i * 7919 + t * 104729 + 17), p = ident.slice();
+      for (let x = 6; x > 0; x--) { const j = Math.floor(r() * (x + 1)); const tmp = p[x]; p[x] = p[j]; p[j] = tmp; }
+      let bad = 0;
+      for (let d = 1; d < 7; d++) if (share(p[d - 1], p[d])) bad += 2;         /* no part two days in a row */
+      if (prev) {
+        if (share(prev[6], p[0])) bad += 2;                                       /* …also across Sunday → Monday */
+        for (let d = 0; d < 7; d++) if (prev[d] === p[d]) bad++;                  /* a different order from last week */
+      }
+      if (bad < bestBad) { best = p; bestBad = bad; if (!bad) break; }
+    }
+    O.push(best);
+  }
+  return O[k];
+}
+function dayParts(d) {
+  const a = planAnchor();
+  if (d < a || d > planEnd() || d === D.settings.examDate) return [];
+  const n = diffDays(a, d);
+  return weekSets()[weekOrder(Math.floor(n / 7))[n % 7]];
+}
+function partDone(d, p) { return !!(D.plan[d] && D.plan[d][p]); }
+function markPart(p, d) { d = d || todayStr(); const x = D.plan[d] || (D.plan[d] = {}); if (!x[p]) { x[p] = 1; save(); } }
+function nextUnitOf(id) { const b = getBook(id); if (!b) return null; const st = D.books[id] || {}; const u = b.units.find(x => st[x.n] !== 'done'); return u ? { book: b, unit: u } : null; }
+function vocabBookId() {
+  if (!PACK) return null;
+  const ids = ['evu-ui', 'evu-adv'].filter(getBook).sort((a, b) => (D.bookTouched[b] || 0) - (D.bookTouched[a] || 0));
+  return ids[0] || null;
+}
+function partDesc(p) {
+  if (p === 'vocab' || p === 'pv') {
+    const id = p === 'pv' ? (getBook('pv-adv') ? 'pv-adv' : null) : vocabBookId(), x = id && nextUnitOf(id);
+    if (x) return x.book.short + ' · ' + unitLabel(x.book, x.unit) + ': ' + x.unit.t;
+    if (!PACK) return PARTS[p].d + ' — load “My books” to see which unit';
+  }
+  if (p === 'grammar') return currentTopic().label;
+  return PARTS[p].d;
+}
+function partRow(d, p) {
+  const P = PARTS[p], done = partDone(d, p);
+  return '<div class="row prow' + (done ? ' is-done' : '') + '"><button class="prow-main" data-a="partGo" data-p="' + p + '"><span class="badge pt-' + p + '">' + IC[P.icon] + '</span>' +
+    '<span class="main"><span class="t">' + esc(P.t) + '</span><span class="d">' + esc(partDesc(p)) + '</span></span></button>' +
+    '<button class="tick' + (done ? ' on' : '') + '" data-a="partToggle" data-d="' + d + '" data-p="' + p + '" aria-pressed="' + done + '" aria-label="' + esc(P.t) + (done ? ': done' : ': mark as done') + '">' + IC.check + '</button></div>';
+}
+function goPart(p) {
+  const eng = re => (C.engnovate.find(l => re.test(l.t)) || {}).u;
+  if (p === 'listening' || p === 'reading') { const u = eng(p === 'listening' ? /listening/i : /reading/i); if (u) openLink(u); return; }
+  toRoot();
+  if (p === 'task1' || p === 'task2') { S.tab = 'exam'; S.examSeg = 'writing'; S.wtask = p === 'task1' ? 1 : 2; }
+  else if (p === 'speaking') { S.tab = 'exam'; S.examSeg = 'speaking'; }
+  else if (p === 'mock') { S.tab = 'exam'; S.examSeg = 'tests'; }
+  else if (p === 'grammar') { S.tab = 'grammar'; go({ name: 'topic', id: currentTopic().id }); return; }
+  else if (p === 'vocab' || p === 'pv') {
+    S.tab = 'books';
+    const id = p === 'pv' ? 'pv-adv' : vocabBookId(), x = id && nextUnitOf(id);
+    if (x) { go({ name: 'unit', book: x.book.id, unit: x.unit.n }); return; }
+  }
+  else S.tab = 'words';
+  render(true);
+}
+function weekMonthLabel(a, b) {
+  const da = parseDate(a), db = parseDate(b);
+  if (da.getMonth() === db.getMonth()) return monthName(da.getFullYear(), da.getMonth()) + ' ' + da.getFullYear();
+  if (da.getFullYear() === db.getFullYear()) return monthName(0, da.getMonth()) + ' – ' + monthName(0, db.getMonth()) + ' ' + db.getFullYear();
+  return monthName(0, da.getMonth()) + ' ' + da.getFullYear() + ' – ' + monthName(0, db.getMonth()) + ' ' + db.getFullYear();
+}
+
 /* ================= Screens: Today ================= */
 function nextBookUnits() {
   if (!PACK) return [];
@@ -377,22 +501,21 @@ function rToday(v) {
   const mon = weekStart(t), names = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
   let cells = '', done = 0;
   for (let i = 0; i < 7; i++) {
-    const d = addDays(mon, i), on = activeDay(d);
+    const d = addDays(mon, i), on = activeDay(d), dp = dayParts(d);
     if (on) done++;
-    cells += '<div class="tile' + (on ? ' on' : '') + (d === t ? ' today' : '') + (d > t ? ' future' : '') + '">' + names[i] + '</div>';
+    cells += '<button class="tile' + (on ? ' on' : '') + (d === t ? ' today' : '') + (d > t ? ' future' : '') + '" data-a="calOpen" data-d="' + d + '" aria-label="' + esc(fmtDay(d) + (dp.length ? ': ' + dp.map(p => PARTS[p].t).join(', ') : '')) + '">' +
+      '<span class="dn">' + names[i] + '</span><span class="dd">' + parseDate(d).getDate() + '</span><span class="dots">' + dp.map(p => '<i class="pt-' + p + '"></i>').join('') + '</span></button>';
   }
-  h += '<div class="glass-wrap"><div class="glass" role="img" aria-label="Study days this week: ' + done + '">' + cells + '</div>' +
+  h += '<div class="glass-wrap"><div class="week-head"><span class="wk-month">' + esc(weekMonthLabel(mon, addDays(mon, 6))) + '</span><button class="chip" data-a="goPlan">' + IC.cal + 'Plan</button></div>' +
+    '<div class="glass">' + cells + '</div>' +
     '<p class="week-note">This week: <b>' + done + ' of ' + s.weekGoal + '</b> sessions' + (done >= s.weekGoal ? ' — weekly goal reached!' : '') + '</p></div>';
 
-  const q = queue(), n = q.due.length + q.fresh.length;
-  let rows = planRow('goReview', 'terra', 'cards', 'Words', n ? (q.due.length + ' to review, ' + q.fresh.length + ' new') : 'All reviews done for today');
-  if (PACK) nextBookUnits().forEach(x => { rows += planRow('openUnit', 'olive', 'book', x.book.short, unitLabel(x.book, x.unit) + ': ' + x.unit.t, { book: x.book.id, unit: x.unit.n }); });
-  else rows += planRow('goTab', 'olive', 'book', 'Books', 'Load your “My books” file', { tab: 'books' });
-  const gt = currentTopic();
-  rows += planRow('openTopic', 'butter', 'list', 'Grammar', gt.label, { id: gt.id });
-  rows += planRow('goExamTests', 'blush', 'pen', 'Exam', examSummary());
-  h += '<h2 class="group-title">Today’s plan</h2><div class="group">' + rows + '</div>';
-  h += '<div class="group" style="margin-top:14px">' + planRow('goLinks', 'olive', 'link', 'Resources', 'British Council, Engnovate, official IELTS samples') + planRow('goSettings', 'butter', 'gear', 'Settings and backup', '') + '</div>';
+  const q = queue(), n = q.due.length + q.fresh.length, tp = dayParts(t);
+  let rows = planRow('goReview', 'terra', 'cards', 'Word cards', n ? (q.due.length + ' to review, ' + q.fresh.length + ' new') : 'All reviews done for today');
+  tp.forEach(p => { rows += partRow(t, p); });
+  if (!tp.length) rows += '<div class="row"><span class="main"><span class="t">Nothing else planned</span><span class="d">A light day — just your word cards</span></span></div>';
+  h += '<div class="plan-head"><h2 class="group-title">Today’s plan</h2><span class="soft small">' + esc(fmtDay(t)) + '</span></div><div class="group">' + rows + '</div>';
+  h += '<div class="group" style="margin-top:14px">' + planRow('goExamTests', 'blush', 'pen', 'Test results', examSummary()) + planRow('goLinks', 'olive', 'link', 'Resources', 'British Council, Engnovate, official IELTS samples') + planRow('goSettings', 'butter', 'gear', 'Settings and backup', '') + '</div>';
   h += '<p class="foot">Your progress is stored on this device only.</p>';
   return h;
 }
@@ -433,6 +556,70 @@ function rRestore() {
     '<button class="btn wide" data-a="restoreDo">Restore from text</button>';
 }
 
+/* ================= Screens: Plan (calendar) ================= */
+function rPlan(v) {
+  if (v.name === 'planEdit') return rPlanEdit();
+  const t = todayStr(), exam = D.settings.examDate;
+  if (!S.calMonth) S.calMonth = t.slice(0, 7);
+  if (!S.calSel) S.calSel = t;
+  const y = +S.calMonth.slice(0, 4), m = +S.calMonth.slice(5, 7) - 1;
+  const first = todayStr(new Date(y, m, 1)), last = todayStr(new Date(y, m + 1, 0));
+  const minM = planAnchor().slice(0, 7), maxM = planEnd().slice(0, 7);
+  let h = '<header class="cal-head"><h1 class="display cal-title">' + monthName(y, m) + ' <em>' + y + '</em></h1><div class="cal-nav">' +
+    '<button class="iconbtn" data-a="calNav" data-n="-1" aria-label="Previous month"' + (S.calMonth <= minM ? ' disabled' : '') + '>' + IC.prev + '</button>' +
+    '<button class="chip" data-a="calToday">Today</button>' +
+    '<button class="iconbtn" data-a="calNav" data-n="1" aria-label="Next month"' + (S.calMonth >= maxM ? ' disabled' : '') + '>' + IC.next + '</button></div></header>';
+  let cells = '';
+  ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'].forEach((n, i) => { cells += '<span class="cal-wd' + (i >= 5 ? ' wknd' : '') + '">' + n + '</span>'; });
+  const used = {};
+  for (let d = weekStart(first), end = addDays(weekStart(last), 6); d <= end; d = addDays(d, 1)) {
+    const parts = dayParts(d), inM = d.slice(0, 7) === S.calMonth, dow = (parseDate(d).getDay() + 6) % 7;
+    const all = parts.length > 0 && parts.every(p => partDone(d, p));
+    let pills = '';
+    if (d === exam) pills += '<span class="cal-pill pt-exam">Exam</span>';
+    parts.forEach(p => { used[p] = 1; pills += '<span class="cal-pill pt-' + p + (partDone(d, p) ? ' done' : '') + '">' + PARTS[p].s + '</span>'; });
+    cells += '<button class="cal-cell' + (inM ? '' : ' out') + (dow >= 5 ? ' wknd' : '') + (d === t ? ' today' : '') + (d === S.calSel ? ' sel' : '') + (all ? ' alldone' : '') + (d === exam ? ' exam' : '') + '" data-a="calDay" data-d="' + d + '"' +
+      ' aria-label="' + esc(fmtDay(d) + (d === exam ? ', exam day' : '') + (parts.length ? ': ' + parts.map(p => PARTS[p].t).join(', ') : '') + (all ? ', all done' : '')) + '"' + (d === S.calSel ? ' aria-current="date"' : '') + '>' +
+      '<span class="cal-num">' + (all ? '<i class="cal-ok">' + IC.check + '</i>' : '') + '<b>' + parseDate(d).getDate() + '</b></span>' + pills + '</button>';
+  }
+  h += '<div class="cal" id="calGrid">' + cells + '</div>';
+  h += '<div class="legend">' + PART_IDS.filter(p => used[p]).map(p => '<span><i class="pt-' + p + '"></i>' + PARTS[p].t + '</span>').join('') + '</div>';
+
+  const sd = S.calSel, sp = dayParts(sd);
+  let det = '<section class="day-card" id="dayCard"><div class="day-top"><div><p class="kicker">' + (sd === t ? 'Today' : sd < t ? 'Past day' : 'Coming up') + '</p><h2 class="day-title">' + esc(fmtDay(sd)) + '</h2></div>';
+  if (exam) {
+    const n = diffDays(sd, exam);
+    det += n > 0 ? '<span class="chip">' + n + ' ' + plural(n, 'day', 'days') + ' to the exam</span>' : n === 0 ? '<span class="chip terra">Exam day!</span>' : '';
+  }
+  det += '</div><div class="group">';
+  sp.forEach(p => { det += partRow(sd, p); });
+  if (!sp.length) det += '<div class="row"><span class="main"><span class="t">' + (sd === exam ? 'Exam day' : sd > planEnd() ? 'Outside your plan' : 'Rest day') + '</span><span class="d">' + (sd === exam ? 'Good luck! Don’t learn anything new today.' : sd > planEnd() ? 'Extend the plan below to keep going' : 'Nothing planned — just your word cards') + '</span></span></div>';
+  det += planRow('goReview', 'terra', 'cards', 'Word cards', 'Every day: reviews and new words') + '</div></section>';
+  h += det;
+  h += '<div class="group" style="margin-top:14px">' + planRow('planEdit', 'olive', 'gear', 'Edit the weekly set', D.settings.shuffleWeeks === false ? 'The same order every week' : 'Same 7 days, new order every week') +
+    '<div class="setrow"><span><span class="soft small" style="display:block">Plan</span>' + esc(fmtLong(D.settings.planStart) + ' – ' + fmtLong(planEnd())) + '</span><button class="chip" data-a="planExtend">+6 months</button></div></div>';
+  return h;
+}
+function rPlanEdit() {
+  const sets = weekSets(), shuf = D.settings.shuffleWeeks !== false;
+  let h = '<h1 class="display">Weekly <em>set</em></h1><p class="lead">' + (shuf
+    ? 'Choose what goes into each of the 7 days. Every week the app shuffles these days into a new order — the same parts come back, just on different days, and never the same part two days in a row.'
+    : 'Choose what you study on each day of the week. Shuffling is off, so every week looks the same.') + ' Word cards are every day, so they aren’t listed here.</p>';
+  h += '<label class="toggle"><span>Shuffle the order every week</span><input type="checkbox" data-ch="planShuffle"' + (shuf ? ' checked' : '') + '></label>';
+  sets.forEach((s, i) => {
+    h += '<h2 class="group-title">' + (shuf ? 'Day ' + (i + 1) : DAY_NAMES[i]) + (s.length ? '' : ' · rest day') + '</h2><div class="pick">' +
+      PART_IDS.map(p => { const on = s.indexOf(p) >= 0; return '<button class="cal-pill big pt-' + p + (on ? ' on' : '') + '" data-a="planPick" data-i="' + i + '" data-p="' + p + '" aria-pressed="' + on + '">' + PARTS[p].t + '</button>'; }).join('') + '</div>';
+  });
+  h += '<button class="btn ghost wide" style="margin-top:22px" data-a="planReset">Back to the default set</button>';
+  return h;
+}
+function calShift(n) {
+  const y = +S.calMonth.slice(0, 4), m = +S.calMonth.slice(5, 7) - 1 + n;
+  const next = todayStr(new Date(y, m, 1)).slice(0, 7);
+  if (next < planAnchor().slice(0, 7) || next > planEnd().slice(0, 7)) return;
+  S.calMonth = next; haptic(); render();
+}
+
 /* ================= Screens: Books ================= */
 function unitWord(b) { return b.unitWord || 'Unit'; }
 function unitLabel(b, u) { const lab = u.lab != null ? u.lab : u.n; return lab === '' ? 'Whole chapter' : unitWord(b) + ' ' + lab; }
@@ -441,6 +628,7 @@ function rBooks(v) {
   if (v.name === 'book') return rBook(v);
   if (v.name === 'unit') return rUnit(v);
   if (v.name === 'train') return rTrain(v);
+  if (v.name === 'trainSetup') return rTrainSetup(v);
   let h = ptitle('My', 'books', 'paperclip');
   if (!PACK) {
     return h + '<p class="lead">This is where your books’ contents, the words from each unit with translations, and your progress will appear.</p>' +
@@ -520,9 +708,10 @@ function rWords(v) {
   const q = queue(), n = q.due.length + q.fresh.length, total = D.words.length;
   let h = ptitle('Word', 'bank', 'heart') + '<p class="lead">' + total + ' ' + plural(total, 'card', 'cards', 'cards') + ' in your deck. Due: ' + q.due.length + ', new today: ' + q.fresh.length + '.</p>';
   h += '<button class="btn wide" data-a="startReview"' + (n ? '' : ' disabled') + '>' + (n ? 'Review ' + n : 'All reviews done for today') + '</button>';
-  h += '<div style="margin-top:12px">' + seg('dir', [['en-ru', 'EN → RU'], ['ru-en', 'RU → EN']], D.settings.dir, 'Card direction') + '</div>';
-  h += '<div class="btn-row"><button class="btn ghost" data-a="trainSetup">Practice</button><button class="btn ghost" data-a="addWord">Add a word</button></div>';
-  h += '<button class="btn quiet" data-a="bulk">Paste a word list</button>';
+  h += '<p class="kicker" style="margin-top:12px">Cards show</p>' + seg('dir', [['en-ru', 'EN → RU'], ['ru-en', 'RU → EN'], ['type', 'Type EN']], D.settings.dir, 'Card direction');
+  h += '<h2 class="group-title">Practice</h2><div class="modes">' + MODES.map(m =>
+    '<button class="mode m-' + m[0] + '" data-a="trainSetup" data-mode="' + m[0] + '"><b>' + m[1] + '</b><span class="mode-ex">' + m[2] + '</span></button>').join('') + '</div>';
+  h += '<div class="btn-row"><button class="btn ghost" data-a="addWord">Add a word</button><button class="btn ghost" data-a="bulk">Paste a list</button></div>';
   h += '<div class="search"><input type="search" placeholder="Search words" aria-label="Search words" data-in="wq" value="' + esc(S.wq) + '"><select data-ch="wsrc" aria-label="Source">' + srcOptions() + '</select></div>';
   h += '<div class="group" id="wordList">' + wordListHTML() + '</div>';
   return h;
@@ -534,20 +723,25 @@ function rReview(v) {
   }
   const w = D.words.find(x => x.id === v.queue[v.i]);
   if (!w) { v.i++; return rReview(v); }
-  const enFirst = D.settings.dir !== 'ru-en';
+  const typing = D.settings.dir === 'type', enFirst = D.settings.dir === 'en-ru';
   const front = enFirst ? w.en : w.ru, backTxt = enFirst ? w.ru : w.en;
   let h = progressBar(v.i, v.queue.length);
   h += '<article class="index-card" aria-live="polite">' + sticker('paperclip', 'ic-clip') + '<div class="ic-src">' + esc(shortSrc(w) || ' ') + '</div>' +
     '<div class="ic-word' + (enFirst ? '' : ' ru') + '">' + esc(front) + '</div>';
   if (v.shown) {
-    h += '<div class="reveal-enter"><div class="ic-tr">' + esc(backTxt) + '</div>' + (w.ex ? '<div class="ic-ex">' + esc(w.ex) + '</div>' : '') + (w.note ? '<div class="ic-note">' + esc(w.note) + '</div>' : '') + '</div>';
+    const r = v.typed;
+    h += '<div class="reveal-enter">' + (r ? '<div class="ic-res ' + (r.ok ? 'ok' : 'bad') + '">' + (r.ok ? (r.near ? 'Almost — check the spelling' : 'Correct!') : 'You wrote: ' + esc(r.typed)) + '</div>' : '') +
+      '<div class="ic-tr' + (enFirst ? '' : ' en') + '">' + esc(backTxt) + '</div>' + (w.ex ? '<div class="ic-ex">' + esc(w.ex) + '</div>' : '') + (w.note ? '<div class="ic-note">' + esc(w.note) + '</div>' : '') + '</div>';
   }
   if (enFirst || v.shown) h += '<button class="ic-say" data-a="sayWord" aria-label="Pronounce">' + IC.say + '</button>';
   h += '</article>';
-  if (!v.shown) h += '<button class="btn wide" style="margin-top:14px" data-a="reveal">Show answer</button>';
+  if (!v.shown && typing) {
+    h += '<form data-form="revType" autocomplete="off" style="margin-top:14px"><input class="answer" id="revInput" placeholder="Type it in English" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="done" aria-label="Your answer">' +
+      '<button class="btn wide" style="margin-top:10px" type="submit">Check</button></form><button class="btn quiet wide" data-a="reveal">I don’t know — show me</button>';
+  } else if (!v.shown) h += '<button class="btn wide" style="margin-top:14px" data-a="reveal">Show answer</button>';
   else {
-    const L = ['Again', 'Hard', 'Good', 'Easy'];
-    h += '<div class="grades">' + [0, 1, 2, 3].map(g => '<button class="g g' + g + '" data-a="grade" data-g="' + g + '"><b>' + L[g] + '</b><small>' + ivlLabel(preview(w, g).ivl) + '</small></button>').join('') + '</div>';
+    const L = ['Again', 'Hard', 'Good', 'Easy'], sug = v.typed ? (v.typed.ok ? (v.typed.near ? 1 : 2) : 0) : -1;
+    h += '<div class="grades">' + [0, 1, 2, 3].map(g => '<button class="g g' + g + (g === sug ? ' sug' : '') + '" data-a="grade" data-g="' + g + '"><b>' + L[g] + '</b><small>' + ivlLabel(preview(w, g).ivl) + '</small></button>').join('') + '</div>';
   }
   return h;
 }
@@ -626,6 +820,28 @@ function gapSentence(item) {
   if (!m) return null;
   return { before: item.ex.slice(0, m.index), hit: m[0], after: item.ex.slice(m.index + m[0].length) };
 }
+const MODES = [
+  ['choice', 'Pick the meaning', 'tackle → ?'],
+  ['type', 'Type the word', 'решать → ____'],
+  ['letters', 'Missing letters', 'su_t_in_ble'],
+  ['gap', 'Fill the gap', 'We must ___ it']
+];
+/* Missing letters: hide about 45% of the letters (never the first one, never in to / sb / sth etc.) */
+const LT_SKIP = new Set(['to', 'sb', 'sth', 'swh', 'a', 'an', 'the', 'of', 'somebody', 'something', 'someone', 'somewhere', "one's", 'be', 'it']);
+function letterBase(en) { return String(en).replace(/\(.*?\)/g, ' ').split(/\s*[;,/]\s*/)[0].replace(/\s+/g, ' ').trim(); }
+function makeLetters(en) {
+  let blanks = 0;
+  const words = letterBase(en).split(' ').filter(Boolean).map(w => {
+    const chars = Array.from(w).map(c => ({ c: c, hide: false }));
+    if (!LT_SKIP.has(w.toLowerCase())) {
+      const idx = [];
+      chars.forEach((x, i) => { if (i > 0 && /[a-z]/i.test(x.c)) idx.push(i); });
+      if (idx.length >= 2) shuffle(idx).slice(0, Math.max(1, Math.round(idx.length * 0.45))).forEach(i => { chars[i].hide = true; blanks++; });
+    }
+    return chars;
+  });
+  return blanks ? { words: words, blanks: blanks } : null;
+}
 function trainPool(src) {
   if (src && src.indexOf('unit:') === 0) {
     const p = src.split(':'), b = getBook(p[1]), u = getUnit(b, p[2]);
@@ -633,21 +849,24 @@ function trainPool(src) {
   }
   return D.words.filter(w => !src || src === 'all' || w.src === src).map(w => ({ en: w.en, ru: w.ru, ex: w.ex, src: w.src, unit: w.unit, id: w.id }));
 }
+function suitable(pool, mode) { return mode === 'gap' ? pool.filter(gapSentence) : mode === 'letters' ? pool.filter(x => makeLetters(x.en)) : pool; }
 function rTrainSetup(v) {
-  const pool = trainPool(v.src), gapN = pool.filter(gapSentence).length;
+  const pool = trainPool(v.src), fit = suitable(pool, v.mode).length;
   const srcs = Array.from(new Set(D.words.map(w => w.src).filter(Boolean)));
   let h = '<h1 class="display">Practice</h1><p class="lead">Doesn’t affect your card schedule — just practice.</p>';
-  h += '<label class="f">Which words<select data-ch="trainSrc"><option value="all">All my cards (' + D.words.length + ')</option>' +
+  if (v.src && v.src.indexOf('unit:') === 0) h += '<p class="kicker">Words</p><p style="margin:0 0 14px;font-weight:600">' + esc(v.title || 'This unit') + ' (' + pool.length + ')</p>';
+  else h += '<label class="f">Which words<select data-ch="trainSrc"><option value="all">All my cards (' + D.words.length + ')</option>' +
     srcs.map(s => '<option value="' + esc(s) + '"' + (s === v.src ? ' selected' : '') + '>' + esc(s) + ' (' + D.words.filter(w => w.src === s).length + ')</option>').join('') + '</select></label>';
-  h += '<p class="kicker">Task</p>' + seg('trainMode', [['choice', 'Pick the meaning'], ['type', 'Type the word'], ['gap', 'Fill the gap']], v.mode, 'Task type');
-  if (v.mode === 'gap') h += '<p class="soft small">Fill the gap works for words with an example sentence. Here: ' + gapN + '.</p>';
+  h += '<p class="kicker">Task</p>' + seg('trainMode', MODES.map(m => [m[0], m[1]]), v.mode, 'Task type').replace('class="seg"', 'class="seg grid2"');
+  if (v.mode === 'gap') h += '<p class="soft small">Fill the gap works for words with an example sentence. Here: ' + fit + '.</p>';
+  if (v.mode === 'letters') h += '<p class="soft small">You see the translation and the word with gaps — type the missing letters. Tap the speaker if you need a hint.</p>';
   h += '<p class="kicker">How many words</p>' + seg('trainCount', [[10, '10'], [20, '20'], [30, '30']], v.count, 'Number of words');
-  const can = v.mode === 'gap' ? gapN >= 4 : pool.length >= 4;
+  const can = fit >= 4;
   h += '<button class="btn wide" data-a="trainStart"' + (can ? '' : ' disabled') + '>' + (can ? 'Start' : 'You need at least 4 suitable words') + '</button>';
   return h;
 }
 function makeTraining(pool, mode, count, title) {
-  let items = mode === 'gap' ? pool.filter(gapSentence) : pool.slice();
+  let items = suitable(pool, mode).slice();
   items = shuffle(items).slice(0, count);
   return { name: 'train', mode: mode, items: items, pool: pool, i: 0, score: 0, wrong: [], picked: null, title: title || '' };
 }
@@ -675,10 +894,31 @@ function rTrain(v) {
     h += '<button class="btn ghost wide" data-a="trainAgain">Try again</button><button class="btn quiet wide" data-a="back">Done</button></div>';
     return h;
   }
-  if (!v.opts && v.mode !== 'type') prepQuestion(v);
+  if (!v.opts && (v.mode === 'choice' || v.mode === 'gap')) prepQuestion(v);
   const it = v.items[v.i];
   let h = (v.title ? '<p class="kicker">' + esc(v.title) + '</p>' : '') + progressBar(v.i, v.items.length);
-  if (v.mode === 'choice') {
+  if (v.mode === 'letters') {
+    if (!v.lt) v.lt = makeLetters(it.en);
+    const res = v.result;
+    let bi = 0;
+    const word = v.lt.words.map(chars => '<span class="lw">' + chars.map(x => {
+      if (!x.hide) return '<span class="lc">' + esc(x.c) + '</span>';
+      const i = bi++;
+      if (!res) return '<input class="lc in" data-li="' + i + '" data-in="lt" maxlength="2" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="done" aria-label="Missing letter ' + (i + 1) + ' of ' + v.lt.blanks + '">';
+      const ok = (res.letters[i] || '').toLowerCase() === x.c.toLowerCase();
+      return '<span class="lc ' + (ok ? 'ok' : 'bad') + '">' + esc(x.c) + '</span>';
+    }).join('') + '</span>').join('<span class="lgap"></span>');
+    const lst = ' style="--n:' + Math.max(8, ...v.lt.words.map(w => w.length)) + '"';
+    h += '<p class="soft small">Fill in the missing letters</p><div class="q lt-hint">' + esc(it.ru) + ' <button class="iconbtn inline" data-a="sayText" data-text="' + esc(letterBase(it.en)) + '" aria-label="Hear the word">' + IC.say + '</button></div>';
+    if (!res) {
+      h += '<form data-form="letterAns" autocomplete="off"><div class="letters"' + lst + '>' + word + '</div><button class="btn wide" style="margin-top:18px" type="submit">Check</button></form>' +
+        '<button class="btn quiet wide" data-a="typeSkip">I don’t know — show me</button>';
+    } else {
+      h += '<div class="letters"' + lst + '>' + word + '</div><div class="why ' + (res.ok ? 'ok' : 'bad') + '"><b>' + (res.ok ? 'Correct!' : 'Not quite.') + '</b> ' +
+        (res.letters.some(Boolean) && !res.ok ? 'Red letters are the ones you missed. ' : '') + 'Answer: <strong>' + esc(letterBase(it.en)) + '</strong></div>' +
+        '<button class="btn wide" data-a="trainNext">' + (v.i + 1 >= v.items.length ? 'See result' : 'Next') + '</button>';
+    }
+  } else if (v.mode === 'choice') {
     h += '<div class="q" style="font-weight:600">' + esc(it.en) + ' <button class="iconbtn inline" data-a="sayText" data-text="' + esc(it.en) + '" aria-label="Pronounce">' + IC.say + '</button></div>';
     h += optsHTML(v, it.ru, 'trainPick');
   } else if (v.mode === 'gap') {
@@ -714,12 +954,18 @@ function optsHTML(v, correct, action) {
 function rGrammar(v) {
   if (v.name === 'topic') return rTopic(v);
   if (v.name === 'quiz') return rQuiz(v);
-  let h = ptitle('Grammar', 'gym', 'star') + '<p class="lead">12 topics that affect your score most. Each has a rule, where to find it in your books, and a test.</p><div class="group">';
-  C.grammar.forEach(g => {
-    const st = D.grammar[g.id] || {};
-    h += row('openTopic', g.title, st.best != null ? 'Best score: ' + st.best + '/5' : 'Test not taken yet', { id: g.id }, pill(st.status || ''));
+  const total = C.grammar.length, done = C.grammar.filter(g => (D.grammar[g.id] || {}).status === 'done').length;
+  let h = ptitle('Grammar', 'gym', 'star') + '<p class="lead">' + total + ' topics, from tenses to Band 7+ style. Each has a rule, where to find it in your books, and a 5-question test.</p>' + progressBar(done, total);
+  const groups = C.grammarGroups || [{ id: '', title: '' }];
+  groups.forEach(gr => {
+    const items = C.grammar.filter(g => (g.group || '') === gr.id);
+    if (!items.length) return;
+    h += (gr.title ? '<h2 class="group-title">' + esc(gr.title) + '</h2>' : '') + '<div class="group">' + items.map(g => {
+      const st = D.grammar[g.id] || {};
+      return row('openTopic', g.title, st.best != null ? 'Best score: ' + st.best + '/5' : 'Test not taken yet', { id: g.id }, pill(st.status || ''));
+    }).join('') + '</div>';
   });
-  return h + '</div>';
+  return h;
 }
 function refsHTML(id) {
   const r = C.grammarRefs[id]; if (!r) return '';
@@ -730,6 +976,7 @@ function refsHTML(id) {
   if (r.supp) h += ref('Murphy, Supplementary Exercises', 'Exercises ' + esc(r.supp));
   if (r.drz) h += ref('Drozdova', esc(r.drz));
   if (r.extra) h += ref('Vocabulary', esc(r.extra));
+  if (r.note) h += ref('Note', esc(r.note));
   return h + '</div>';
 }
 function rTopic(v) {
@@ -997,7 +1244,7 @@ function rTestForm(v) {
 
 /* ================= Render ================= */
 const main = $('#main');
-const R = { today: rToday, books: rBooks, words: rWords, grammar: rGrammar, exam: rExam };
+const R = { today: rToday, plan: rPlan, books: rBooks, words: rWords, grammar: rGrammar, exam: rExam };
 function render(scroll) {
   const v = view();
   let html = '';
@@ -1015,7 +1262,18 @@ const AFTER = {
   '*:prompt': v => startTick(() => writingTick(v)),
   '*:p2': v => { if (v.phase === 'prep' || v.phase === 'talk') startTick(() => p2Tick(v)); },
   'words:word': v => { if (!v.id) { const i = $('input[name="en"]'); if (i && !('ontouchstart' in window)) i.focus(); } },
-  '*:train': v => { const i = $('#typeInput'); if (i) i.focus(); }
+  '*:train': v => { const i = $('#typeInput') || $('input.lc.in'); if (i) i.focus(); },
+  'words:review': v => { const i = $('#revInput'); if (i) i.focus(); },
+  'plan:root': () => {
+    const g = $('#calGrid'); if (!g) return;
+    let x0 = null, y0 = 0;
+    g.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
+    g.addEventListener('touchend', e => {
+      if (x0 == null) return;
+      const dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0; x0 = null;
+      if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) calShift(dx < 0 ? 1 : -1);
+    }, { passive: true });
+  }
 };
 function writingTick(v) {
   const left = v.limit - curElapsed(v), el = $('#tTime'), fill = $('#tFill');
@@ -1057,6 +1315,32 @@ const A = {
   goLinks: () => go({ name: 'links' }),
   goReview: () => { toRoot(); S.tab = 'words'; startReviewNow(); },
   goExamTests: () => { toRoot(); S.tab = 'exam'; S.examSeg = 'tests'; render(true); },
+  goPlan: () => { S.calSel = todayStr(); S.calMonth = S.calSel.slice(0, 7); setTab('plan'); },
+  calOpen: (el) => { S.calSel = el.dataset.d; S.calMonth = el.dataset.d.slice(0, 7); setTab('plan'); },
+  calDay: (el) => {
+    const d = el.dataset.d; S.calSel = d; haptic();
+    if (d.slice(0, 7) !== S.calMonth) S.calMonth = d.slice(0, 7);
+    render();
+    const c = $('#dayCard'); if (c && c.getBoundingClientRect().top > window.innerHeight - 140) c.scrollIntoView({ block: 'start', behavior: 'smooth' });
+  },
+  calNav: (el) => calShift(+el.dataset.n),
+  calToday: () => { S.calSel = todayStr(); S.calMonth = S.calSel.slice(0, 7); render(); },
+  partGo: (el) => goPart(el.dataset.p),
+  partToggle: (el) => {
+    const d = el.dataset.d, p = el.dataset.p, x = D.plan[d] || (D.plan[d] = {});
+    if (x[p]) delete x[p]; else { x[p] = 1; haptic('ok'); }
+    if (!Object.keys(x).length) delete D.plan[d];
+    save(); render();
+  },
+  planEdit: () => go({ name: 'planEdit' }),
+  planPick: (el) => {
+    const sets = weekSets(), i = +el.dataset.i, p = el.dataset.p, k = sets[i].indexOf(p);
+    if (k >= 0) sets[i].splice(k, 1); else sets[i].push(p);
+    sets[i].sort((a, b) => PART_IDS.indexOf(a) - PART_IDS.indexOf(b));
+    D.settings.weekSets = sets; save(); render();
+  },
+  planReset: () => { D.settings.weekSets = null; D.settings.shuffleWeeks = true; save(); toast('Default set restored'); render(); },
+  planExtend: () => { D.settings.planMonths = (+D.settings.planMonths || 12) + 6; save(); toast('Plan extended to ' + fmtLong(planEnd())); render(); },
   seg: (el) => {
     const n = el.dataset.seg, val = el.dataset.v, v = view();
     if (n === 'dir') { D.settings.dir = val; save(); }
@@ -1076,7 +1360,7 @@ const A = {
       const was = st[v.unit];
       if (val) st[v.unit] = val; else delete st[v.unit];
       D.bookTouched[v.book] = Date.now();
-      if (val === 'done' && was !== 'done') { act('unit'); haptic('ok'); }
+      if (val === 'done' && was !== 'done') { act('unit'); haptic('ok'); markPart(v.book === 'pv-adv' ? 'pv' : /^evu/.test(v.book) ? 'vocab' : 'grammar'); }
       save();
     }
     render();
@@ -1091,7 +1375,7 @@ const A = {
     const v = view(), g = +el.dataset.g, w = D.words.find(x => x.id === v.queue[v.i]);
     if (w) { gradeWord(w, g); v.count++; if (g === 0) v.queue.push(w.id); save(); }
     haptic(g === 0 ? 'err' : '');
-    v.i++; v.shown = false; render();
+    v.i++; v.shown = false; v.typed = null; render();
   },
   addWord: () => go({ name: 'word' }),
   editWord: (el) => go({ name: 'word', id: el.dataset.id }),
@@ -1108,8 +1392,8 @@ const A = {
     back();
   },
   moreWords: () => { S.wlimit += 300; $('#wordList').innerHTML = wordListHTML(); },
-  trainSetup: () => go({ name: 'trainSetup', src: 'all', mode: 'choice', count: 10 }),
-  trainStart: () => { const v = view(); const t = makeTraining(trainPool(v.src), v.mode, v.count); t.setup = { src: v.src, mode: v.mode, count: v.count }; S.stack[S.stack.length - 1] = t; render(true); },
+  trainSetup: (el) => go({ name: 'trainSetup', src: 'all', mode: (el && el.dataset.mode) || 'choice', count: 10 }),
+  trainStart: () => { const v = view(); const t = makeTraining(trainPool(v.src), v.mode, v.count, v.title); t.setup = { src: v.src, mode: v.mode, count: v.count }; S.stack[S.stack.length - 1] = t; render(true); },
   trainPick: (el) => {
     const v = view(); if (v.picked != null) return;
     const k = +el.dataset.k, it = v.items[v.i];
@@ -1118,12 +1402,12 @@ const A = {
     if (ok) { v.score++; haptic('ok'); } else { v.wrong.push(it); haptic('err'); }
     render();
   },
-  typeSkip: () => { const v = view(), it = v.items[v.i]; v.result = { ok: false, typed: '' }; v.wrong.push(it); render(); },
+  typeSkip: () => { const v = view(), it = v.items[v.i]; v.result = { ok: false, typed: '', letters: [] }; v.wrong.push(it); haptic('err'); render(); },
   typeAccept: () => { const v = view(), it = v.items[v.i]; v.result.ok = true; v.score++; v.wrong = v.wrong.filter(x => x !== it); render(); },
-  trainNext: () => { const v = view(); v.i++; v.opts = null; v.picked = null; v.result = null; render(); },
+  trainNext: () => { const v = view(); v.i++; v.opts = null; v.picked = null; v.result = null; v.lt = null; render(); },
   trainAgain: () => {
     const v = view();
-    const t = makeTraining(v.pool, v.mode === 'gap' ? 'gap' : v.mode, v.items.length, v.title);
+    const t = makeTraining(v.pool, v.mode, v.items.length, v.title);
     t.setup = v.setup;
     S.stack[S.stack.length - 1] = t; render(true);
   },
@@ -1150,10 +1434,8 @@ const A = {
   },
   unitTrain: () => {
     const v = view(), b = getBook(v.book), u = getUnit(b, v.unit);
-    const pool = trainPool('unit:' + b.id + ':' + u.n);
-    const t = makeTraining(pool, 'choice', Math.min(20, pool.length), b.short + ', ' + unitLabel(b, u));
     D.bookTouched[b.id] = Date.now(); save();
-    go(t);
+    go({ name: 'trainSetup', src: 'unit:' + b.id + ':' + u.n, mode: 'choice', count: 20, title: b.short + ', ' + unitLabel(b, u) });
   },
 
   /* Grammar */
@@ -1178,7 +1460,7 @@ const A = {
     if (v.i >= g.quiz.length) {
       const st = D.grammar[g.id] || (D.grammar[g.id] = {});
       st.tries = (st.tries || 0) + 1; st.best = Math.max(st.best || 0, v.score); st.last = todayStr();
-      act('quiz'); save();
+      act('quiz'); markPart('grammar'); save();
     }
     render(true);
   },
@@ -1206,7 +1488,7 @@ const A = {
     const v = view();
     D.essays.push({ id: uid(), pid: v.id, task: v.task, date: todayStr(), text: v.text, words: v.words, ms: v.ms, checks: v.checks });
     delete D.drafts[v.id];
-    act('essay'); save(true); haptic('ok');
+    act('essay'); markPart(v.task === 1 ? 'task1' : 'task2'); save(true); haptic('ok');
     toast('Essay saved');
     toRoot(); S.examSeg = 'writing'; render(true);
   },
@@ -1222,7 +1504,7 @@ const A = {
     if (Rec.recording()) { Rec.onready = url => { v.audio = url; if (view() === v) render(); }; Rec.stop(false); }
     else { if (await Rec.start()) render(); }
   },
-  p1Done: () => { act('speaking'); haptic('ok'); toast('Great, session counted'); back(); },
+  p1Done: () => { act('speaking'); markPart('speaking'); haptic('ok'); toast('Great, session counted'); back(); },
   randomP2: () => { const fresh = C.part2.filter(c => !D.speaking[c.id]); const c = shuffle(fresh.length ? fresh : C.part2)[0]; go({ name: 'p2', id: c.id, phase: 'card', rec: Rec.supported() }); },
   openP2: (el) => go({ name: 'p2', id: el.dataset.id, phase: 'card', rec: Rec.supported() }),
   p2Start: async () => {
@@ -1236,7 +1518,7 @@ const A = {
   p2Done: () => {
     const v = view(), d = D.speaking[v.id] || { n: 0 };
     d.n++; d.last = todayStr(); D.speaking[v.id] = d;
-    act('speaking'); save(); haptic('ok'); toast('Cue card done');
+    act('speaking'); markPart('speaking'); save(); haptic('ok'); toast('Cue card done');
     back();
   },
   p2Again: () => { const v = view(); cleanup(); Object.assign(v, { phase: 'card', notes: '', audio: null, checks: {} }); render(true); },
@@ -1296,6 +1578,10 @@ const IN = {
     saveDraft(v);
   },
   p2notes: (el) => { view().notes = el.value; },
+  lt: (el) => {
+    const ch = el.value.replace(/[^a-zA-Z'-]/g, '').slice(-1); el.value = ch;
+    if (ch) { const all = $$('input.lc.in'), i = all.indexOf(el); if (all[i + 1]) all[i + 1].focus(); }
+  },
   rawScore: (el) => {
     const v = view(); v.raw = el.value;
     const n = parseInt(el.value, 10), out = $('#bandOut');
@@ -1316,7 +1602,8 @@ const CH = {
     if (!lsSet(PACK_KEY, txt)) { toast('Not enough browser storage to save your books'); return; }
     PACK = obj; toast('Books loaded: ' + obj.books.length); render(true);
   }),
-  restoreFile: (el) => readFile(el, txt => restoreFromText(txt))
+  restoreFile: (el) => readFile(el, txt => restoreFromText(txt)),
+  planShuffle: (el) => { D.settings.shuffleWeeks = el.checked; save(); render(); }
 };
 const F = {
   word: async (f) => {
@@ -1341,13 +1628,31 @@ const F = {
     if (ok || near) { v.score++; haptic('ok'); } else { v.wrong.push(it); haptic('err'); }
     render();
   },
+  letterAns: () => {
+    const v = view(), it = v.items[v.i], letters = $$('input.lc.in').map(x => x.value.trim().slice(-1));
+    if (!letters.some(Boolean)) { toast('Type the missing letters first'); return; }
+    let k = 0, ok = true;
+    v.lt.words.forEach(ch => ch.forEach(x => { if (x.hide) { if ((letters[k] || '').toLowerCase() !== x.c.toLowerCase()) ok = false; k++; } }));
+    v.result = { ok: ok, letters: letters };
+    if (ok) { v.score++; haptic('ok'); } else { v.wrong.push(it); haptic('err'); }
+    render();
+  },
+  revType: () => {
+    const v = view(), w = D.words.find(x => x.id === v.queue[v.i]), typed = ($('#revInput').value || '').trim();
+    if (!w) return;
+    if (!typed) { A.reveal(); return; }
+    const ans = norm(typed), vs = variants(w.en);
+    const ok = vs.indexOf(ans) >= 0, near = !ok && vs.some(x => x.length > 4 && lev(x, ans) <= 1);
+    v.typed = { ok: ok || near, near: near, typed: typed }; v.shown = true;
+    haptic(ok || near ? 'ok' : 'err'); render();
+  },
   test: (f) => {
     const v = view(), fd = new FormData(f), sk = SKILLS[v.skill];
     let raw = null, band;
     if (sk.raw) { raw = parseInt(fd.get('raw'), 10); if (isNaN(raw) || raw < 0 || raw > 40) { toast('Enter a number from 0 to 40'); return; } band = rawToBand(v.skill, raw); }
     else band = parseFloat(fd.get('band'));
     D.tests.push({ id: uid(), date: String(fd.get('date') || todayStr()), skill: v.skill, source: String(fd.get('source') || ''), title: String(fd.get('title') || '').trim(), raw: raw, band: band });
-    act('test'); save(true); haptic('ok');
+    act('test'); if (PARTS[v.skill]) markPart(v.skill); markPart('mock'); save(true); haptic('ok');
     toast(sk.name + ': band ' + band1(band));
     back();
   }
@@ -1366,6 +1671,11 @@ document.addEventListener('input', e => { const el = e.target, k = el.dataset &&
 document.addEventListener('change', e => { const el = e.target, k = el.dataset && el.dataset.ch; if (k && CH[k]) CH[k](el); });
 document.addEventListener('submit', e => { const f = e.target; if (f.dataset && f.dataset.form && F[f.dataset.form]) { e.preventDefault(); F[f.dataset.form](f); } });
 document.addEventListener('keydown', e => {
+  if (e.key === 'Backspace' && e.target.classList && e.target.classList.contains('lc') && !e.target.value) {
+    const all = $$('input.lc.in'), i = all.indexOf(e.target);
+    if (i > 0) { e.preventDefault(); all[i - 1].value = ''; all[i - 1].focus(); }
+    return;
+  }
   const tag = (e.target.tagName || '').toLowerCase();
   if (tag === 'input' || tag === 'textarea' || tag === 'select' || e.metaKey || e.ctrlKey || e.altKey) return;
   const v = view();

@@ -62,10 +62,11 @@ window.CONTENT = {
     { en: "keep up with", ru: "не отставать от, быть в курсе", ex: "It's hard to keep up with all the new apps." }
   ],
 
-  /* Grammar: 12 topics that matter most for IELTS */
+  /* Grammar topics for IELTS, grouped (see grammarGroups and grammarOrder) */
   grammar: [
     {
       id: "pp-ps",
+      group: "tenses",
       title: "Present Perfect vs Past Simple",
       rule: "Past Simple is for a finished action at a known time in the past: yesterday, in 2019, two years ago, last year. Present Perfect connects the past to now — a result now, or a period that is still going on: this year, so far, since, for, ever, never, already, yet.",
       ielts: "In Task 1, past years need the Past Simple. In Speaking, use the Present Perfect for life experience.",
@@ -79,6 +80,7 @@ window.CONTENT = {
     },
     {
       id: "ppc",
+      group: "tenses",
       title: "Present Perfect Continuous",
       rule: "Have/has been + -ing: an action that started in the past and is still going on (or has just stopped), when the duration matters: How long…? for…, since…. State verbs (know, believe, own, understand) only take the Present Perfect Simple.",
       ielts: "Useful in Speaking Part 1: I've been learning English for…, I've been living here since…",
@@ -92,6 +94,7 @@ window.CONTENT = {
     },
     {
       id: "narrative",
+      group: "tenses",
       title: "Narrative tenses",
       rule: "Past Continuous (was/were + -ing) sets the background — an action in progress at a past moment. Past Perfect (had + past participle) is for something that happened before another past action.",
       ielts: "Using a range of past tenses in Speaking Part 2 shows grammatical range.",
@@ -105,6 +108,7 @@ window.CONTENT = {
     },
     {
       id: "future",
+      group: "tenses",
       title: "Future forms",
       rule: "Will: a decision made at the moment of speaking, or a prediction based on opinion (I think…). Be going to: a plan, or a prediction based on present evidence. Present Continuous: a fixed arrangement (a meeting, a booked ticket). Future Perfect (will have + past participle): completed by a point in the future.",
       ielts: "In Task 2, hedge your predictions: is likely to, will probably, may well.",
@@ -118,6 +122,7 @@ window.CONTENT = {
     },
     {
       id: "conditionals",
+      group: "cond",
       title: "Conditionals",
       rule: "Zero: If + present, present (facts). First: If + present, will (a real future). Second: If + past, would (unreal present). Third: If + past perfect, would have + past participle (unreal past). Mixed: If + past perfect, would + verb (a past cause with a present result).",
       ielts: "In Task 2, the second conditional is great for suggesting solutions: If governments invested more…, fewer people would…",
@@ -131,6 +136,7 @@ window.CONTENT = {
     },
     {
       id: "passive",
+      group: "passive",
       title: "The passive",
       rule: "Be + past participle. Use it when the process or the result matters more than who did it. The tense is carried by be: is made, was made, has been made, will be made.",
       ielts: "Essential for Task 1 process diagrams, and it makes writing sound more academic: It is believed that…, …is expected to…",
@@ -144,6 +150,7 @@ window.CONTENT = {
     },
     {
       id: "relative",
+      group: "clauses",
       title: "Relative clauses",
       rule: "Who for people, which for things, that for both (only without commas), whose for possession, where for places, when for times. With commas (extra information), use only who or which — never that.",
       ielts: "Complex sentences with which and who raise your Grammatical Range score.",
@@ -157,6 +164,7 @@ window.CONTENT = {
     },
     {
       id: "articles",
+      group: "nouns",
       title: "Articles",
       rule: "A/an: one of many, mentioned for the first time. The: a specific or already known thing, something unique (the government, the internet), and with superlatives. No article: general statements with plurals and uncountable nouns (Children need education).",
       ielts: "Article mistakes are the most common reason Russian speakers lose marks.",
@@ -170,6 +178,7 @@ window.CONTENT = {
     },
     {
       id: "comparisons",
+      group: "describe",
       title: "Comparisons for Task 1",
       rule: "More/less … than, the highest/lowest, twice as many as, the same as. Intensifiers with comparatives: much, far, considerably, slightly (much higher, slightly lower).",
       ielts: "You need comparisons in every Task 1 — without them, Task Achievement suffers.",
@@ -183,6 +192,7 @@ window.CONTENT = {
     },
     {
       id: "modals",
+      group: "modals",
       title: "Modal verbs",
       rule: "Obligation: must, have to, need to. No obligation: don't have to, needn't. Advice: should, ought to. Probability: must (certain), might/may/could (possible), can't (impossible). About the past: must have, can't have, should have + past participle.",
       ielts: "Should and might help you soften claims in Task 2 — examiners value this academic style.",
@@ -196,6 +206,7 @@ window.CONTENT = {
     },
     {
       id: "gerund",
+      group: "clauses",
       title: "Gerund or infinitive",
       rule: "After enjoy, avoid, consider, suggest, mind, finish, keep, look forward to: -ing. After decide, plan, hope, agree, refuse, manage, want, afford: to + verb. After prepositions, always -ing: interested in learning.",
       ielts: "Examiners notice these mistakes in both Writing and Speaking.",
@@ -209,6 +220,7 @@ window.CONTENT = {
     },
     {
       id: "linking",
+      group: "linking",
       title: "Linking words",
       rule: "Contrast: however, although + clause, despite/in spite of + noun or -ing, whereas. Reason: because, due to + noun, since. Result: therefore, consequently, as a result. Addition: moreover, in addition, furthermore.",
       ielts: "Coherence and Cohesion is a quarter of your Writing score. But don't overload your text with linkers.",
@@ -218,6 +230,328 @@ window.CONTENT = {
         { q: "The flight was cancelled ___ bad weather.", o: ["because", "due to", "therefore", "although"], a: 1, why: "Reason + noun: due to. Because needs a clause (because the weather was bad)." },
         { q: "Prices rose sharply. ___, demand fell.", o: ["As a result", "Despite", "Although", "Whereas"], a: 0, why: "A consequence: As a result." },
         { q: "City life offers many jobs. ___, it provides better access to healthcare.", o: ["However", "Moreover", "Whereas", "Despite"], a: 1, why: "Adding another advantage: Moreover." }
+      ]
+    },
+    {
+      id: "pres-simple-cont",
+      group: "tenses",
+      title: "Present Simple vs Continuous",
+      rule: "Present Simple: habits, routines, facts and permanent situations (I work from home; water boils at 100°C). Present Continuous: actions happening now or around now, temporary situations and changing trends (I'm reading a great book this week; prices are rising). State verbs — know, like, want, believe, belong, seem, understand — normally don't take the continuous.",
+      ielts: "Speaking Part 1 is full of habits (I usually…) and current situations (At the moment I'm working on…). In Task 2, the Present Continuous describes trends: More people are choosing to…",
+      quiz: [
+        { q: "I usually ___ to work, but this week I ___ the bus because my bike is broken.", o: ["cycle … am taking", "am cycling … take", "cycle … take", "am cycling … am taking"], a: 0, why: "Usually = a habit (Present Simple); this week = a temporary situation (Present Continuous)." },
+        { q: "Look! It ___ outside.", o: ["snows", "is snowing", "snowed", "has snowed"], a: 1, why: "Happening right now: Present Continuous." },
+        { q: "I ___ what you mean.", o: ["understand", "am understanding", "was understanding", "have understood"], a: 0, why: "Understand is a state verb, so no continuous form." },
+        { q: "The Earth ___ around the Sun.", o: ["goes", "is going", "went", "has gone"], a: 0, why: "A permanent fact: Present Simple." },
+        { q: "Can you call back later? I ___ dinner right now.", o: ["cook", "am cooking", "cooked", "have cooked"], a: 1, why: "Right now: Present Continuous." }
+      ]
+    },
+    {
+      id: "future-perf",
+      group: "tenses",
+      title: "Future Continuous & Future Perfect",
+      rule: "Future Continuous (will be + -ing): an action in progress at a moment in the future (This time next week I'll be lying on a beach). Future Perfect (will have + past participle): an action completed before a point in the future, often with by (By 2030, the city will have built a new metro line).",
+      ielts: "Task 1 charts with projections (2030, 2040): By 2040 the figure will have reached… In Speaking Part 3: In twenty years, people will be working…",
+      quiz: [
+        { q: "This time tomorrow I ___ my IELTS Speaking test.", o: ["will take", "will be taking", "would take", "take"], a: 1, why: "In progress at a future moment (this time tomorrow): Future Continuous." },
+        { q: "By the end of the year, I ___ all the units in this book.", o: ["finished", "will be finishing", "will have finished", "finish"], a: 2, why: "Completed before a future point (by the end of the year): Future Perfect." },
+        { q: "By 2040, the number of electric cars ___ to 50 million.", o: ["rose", "will have risen", "is rising", "has risen"], a: 1, why: "By + a future year: Future Perfect. Typical for Task 1 projections." },
+        { q: "Don't call at 8 — we ___ dinner then.", o: ["will have", "will be having", "will have had", "had"], a: 1, why: "An action in progress at 8 o'clock: Future Continuous." },
+        { q: "___ you ___ the report by Friday?", o: ["Will … have finished", "Will … be finish", "Have … finished", "Do … finish"], a: 0, why: "Completed by a future deadline: Future Perfect." }
+      ]
+    },
+    {
+      id: "used-to",
+      group: "tenses",
+      title: "Used to, would, be used to",
+      rule: "Used to + verb: a past habit or state that is no longer true (I used to live in France). Would + verb: repeated past actions only, not states (Every summer we would go to the sea). Be / get used to + -ing or a noun: be / become accustomed to something (I'm used to getting up early).",
+      ielts: "Speaking Part 1 and 2 often ask how things have changed: I used to…, but now… Don't confuse it with I'm used to…",
+      quiz: [
+        { q: "I ___ coffee, but now I drink it every day.", o: ["didn't use to like", "wasn't used to like", "wouldn't like", "am not used to liking"], a: 0, why: "A past state that has changed: didn't use to + verb. Would doesn't work with states like like." },
+        { q: "Living in Moscow, I'm used to ___ in the cold.", o: ["walk", "walking", "walked", "be walking"], a: 1, why: "Be used to + -ing = be accustomed to." },
+        { q: "When I was a child, my grandmother ___ tell me stories every evening.", o: ["would", "was used to", "is used to", "use to"], a: 0, why: "A repeated past action: would (used to is also possible, but use to without -d is wrong)." },
+        { q: "There ___ a cinema here, but it closed in 2015.", o: ["would be", "used to be", "was used to be", "is used to"], a: 1, why: "A past state: used to. Would is only for repeated actions." },
+        { q: "It took me a while to ___ driving on the left.", o: ["use to", "get used to", "used to", "would"], a: 1, why: "Get used to + -ing = gradually become accustomed." }
+      ]
+    },
+    {
+      id: "deduction",
+      group: "modals",
+      title: "Modals of deduction",
+      rule: "How sure are you? Present: must (I'm sure it's true), might / may / could (perhaps), can't (I'm sure it isn't true). Past: must have / might have / can't have / couldn't have + past participle. Mustn't is NOT the opposite of must here — use can't.",
+      ielts: "Speaking Part 3 rewards speculation about causes and the future: It might have been because…, People may well…",
+      quiz: [
+        { q: "You've been travelling all day — you ___ be exhausted.", o: ["must", "can't", "mustn't", "should"], a: 0, why: "A confident conclusion: must." },
+        { q: "That ___ be Anna at the door — she's in Paris this week.", o: ["mustn't", "can't", "must", "might"], a: 1, why: "Sure it's impossible: can't. Mustn't means 'it's forbidden'." },
+        { q: "I'm not sure where my keys are. I ___ have left them at the office.", o: ["might", "can't", "mustn't", "shouldn't"], a: 0, why: "A past possibility: might have + past participle." },
+        { q: "He ___ have finished the essay already — he only started ten minutes ago.", o: ["must", "can't", "should", "might"], a: 1, why: "Impossible in the past: can't have + past participle." },
+        { q: "The streets are wet. It ___ rained in the night.", o: ["must have", "can't have", "should have", "must"], a: 0, why: "A confident conclusion about the past: must have + past participle." }
+      ]
+    },
+    {
+      id: "obligation",
+      group: "modals",
+      title: "Obligation and advice",
+      rule: "Must: obligation the speaker feels, or written rules. Have to: obligation from outside (I have to wear a uniform). Mustn't: it's forbidden. Don't have to / needn't: it isn't necessary. Should / ought to: advice. Had better: strong advice for a specific situation. Needn't have done: you did it, but it wasn't necessary.",
+      ielts: "In Task 2 solutions: Governments should…, Schools ought to…, Parents need to… Varying these is better than repeating should.",
+      quiz: [
+        { q: "You ___ smoke inside the building — it's against the law.", o: ["don't have to", "mustn't", "needn't", "shouldn't have"], a: 1, why: "It's forbidden: mustn't." },
+        { q: "I ___ get up early tomorrow — it's Saturday!", o: ["mustn't", "don't have to", "have to", "must"], a: 1, why: "It isn't necessary: don't have to." },
+        { q: "It's late. We ___ leave now or we'll miss the last train.", o: ["had better", "would rather", "needn't", "don't have to"], a: 0, why: "Strong advice with a warning (or…): had better." },
+        { q: "I ___ have bought so much food — only three people came.", o: ["mustn't", "needn't", "couldn't", "can't"], a: 1, why: "Needn't have + past participle: I did it, but it wasn't necessary." },
+        { q: "In my country, all children ___ go to school until the age of 16.", o: ["have to", "had better", "needn't", "ought"], a: 0, why: "An external rule (the law): have to. Ought needs to." }
+      ]
+    },
+    {
+      id: "cond-mixed",
+      group: "cond",
+      title: "Third and mixed conditionals",
+      rule: "Third: If + past perfect, would have + past participle — an imagined past (If I had known, I would have come). Mixed (past → present): If + past perfect, would + verb (If I had studied medicine, I would be a doctor now). Mixed (present → past): If + past simple, would have + past participle (If I spoke Spanish, I would have got that job). Could have / might have show possibility.",
+      ielts: "Band 7 Grammatical Range needs complex structures. A mixed conditional in Speaking Part 2 or 3 stands out.",
+      quiz: [
+        { q: "If I ___ about the traffic, I would have left earlier.", o: ["knew", "had known", "would know", "have known"], a: 1, why: "An imagined past: If + past perfect." },
+        { q: "If she hadn't missed the train, she ___ here now.", o: ["would be", "would have been", "will be", "is"], a: 0, why: "Past cause, present result (now): mixed conditional, would + verb." },
+        { q: "We ___ lost if we had taken a map.", o: ["wouldn't have got", "wouldn't get", "didn't get", "won't get"], a: 0, why: "Third conditional: would have + past participle." },
+        { q: "If I hadn't moved to France, I ___ French so well today.", o: ["wouldn't speak", "wouldn't have spoken", "won't speak", "didn't speak"], a: 0, why: "Past cause, present result (today): would + verb." },
+        { q: "If you had asked me, I ___ have helped you.", o: ["could", "can", "will", "would be"], a: 0, why: "Could have + past participle = a past possibility." }
+      ]
+    },
+    {
+      id: "wish",
+      group: "cond",
+      title: "Wish and if only",
+      rule: "Wish + past simple: a wish about the present (I wish I lived by the sea). Wish + past perfect: a regret about the past (I wish I had started earlier). Wish + would: annoyance, or wanting someone else to change (I wish the neighbours would stop making noise). If only is a stronger version. In formal style, were is used for all persons (I wish I were…).",
+      ielts: "Speaking Part 2 cue cards about regrets, goals and changes: I wish I had… / If only I could…",
+      quiz: [
+        { q: "I wish I ___ more free time — I'm always busy.", o: ["have", "had", "would have", "had had"], a: 1, why: "A wish about the present: wish + past simple." },
+        { q: "I wish I ___ harder at school. Now it's too late.", o: ["studied", "had studied", "would study", "study"], a: 1, why: "A regret about the past: wish + past perfect." },
+        { q: "I wish you ___ interrupting me!", o: ["stop", "stopped", "would stop", "had stopped"], a: 2, why: "Annoyance at someone's behaviour: wish + would." },
+        { q: "If only I ___ how to drive — I could get to work much faster.", o: ["know", "knew", "had known", "would know"], a: 1, why: "An unreal present: if only + past simple." },
+        { q: "She wishes she ___ that job offer last year.", o: ["accepted", "had accepted", "would accept", "accepts"], a: 1, why: "Last year = the past: wish + past perfect." }
+      ]
+    },
+    {
+      id: "unless",
+      group: "cond",
+      title: "Unless, as long as, in case",
+      rule: "Unless = if … not (I won't go unless you come). As long as / provided (that) / providing = only if (You can borrow it as long as you return it). In case = as a precaution, because something might happen (Take an umbrella in case it rains) — it isn't the same as if. After all of these, and after when / before / until, use a present tense for the future.",
+      ielts: "These add precision to Task 2 arguments: Remote work is effective provided that employees are well organised.",
+      quiz: [
+        { q: "You won't improve ___ you practise every day.", o: ["unless", "if", "in case", "provided"], a: 0, why: "Unless = if you don't practise." },
+        { q: "Take some cash ___ the card machine doesn't work.", o: ["unless", "in case", "as long as", "provided"], a: 1, why: "A precaution against something that might happen: in case." },
+        { q: "You can use my laptop ___ you're careful with it.", o: ["unless", "in case", "as long as", "even if"], a: 2, why: "A condition (only if): as long as." },
+        { q: "I'll call you when I ___ at the airport.", o: ["will arrive", "arrive", "arrived", "would arrive"], a: 1, why: "After when, use the present for the future." },
+        { q: "Tourism benefits local communities ___ it is properly managed.", o: ["unless", "provided that", "in case", "whereas"], a: 1, why: "Only on this condition: provided that." }
+      ]
+    },
+    {
+      id: "causative",
+      group: "passive",
+      title: "Have something done & reporting passive",
+      rule: "Have / get + object + past participle: someone else does a service for you (I had my hair cut; we're getting the flat painted). It also describes bad experiences: She had her phone stolen. The reporting passive: It is said that… / He is said to be… / They are believed to have left… (to have + past participle for an earlier action).",
+      ielts: "The reporting passive (is thought to, is believed to) makes Task 2 sound objective and academic.",
+      quiz: [
+        { q: "I ___ my eyes tested last week.", o: ["had", "made", "did", "was"], a: 0, why: "A service done for you: have + object + past participle." },
+        { q: "We're having the kitchen ___ next month.", o: ["redecorate", "redecorated", "redecorating", "to redecorate"], a: 1, why: "Have + object + past participle." },
+        { q: "He ___ his wallet stolen on the metro.", o: ["had", "made", "was", "got to"], a: 0, why: "A bad experience: had + object + past participle." },
+        { q: "The castle ___ to be over 800 years old.", o: ["says", "is said", "said", "is saying"], a: 1, why: "Reporting passive: is said to + verb." },
+        { q: "The thieves are believed ___ the country.", o: ["to leave", "to have left", "leaving", "have left"], a: 1, why: "An earlier action: to have + past participle." }
+      ]
+    },
+    {
+      id: "reported",
+      group: "passive",
+      title: "Reported speech",
+      rule: "When the reporting verb is in the past, tenses usually move back: am → was, will → would, have done / did → had done. Time and place words change: tomorrow → the next day, here → there. Reported questions use statement word order: She asked where I lived (not where did I live). Commands: told me to… / told me not to… Use precise verbs: suggest, admit, deny, warn, explain.",
+      ielts: "Reporting verbs (claim, argue, suggest) are essential in Task 2: Some people argue that…",
+      quiz: [
+        { q: "She said she ___ tired.", o: ["is being", "was", "has been being", "be"], a: 1, why: "Am → was after a past reporting verb." },
+        { q: "He asked me where ___.", o: ["do I live", "I lived", "did I live", "lived I"], a: 1, why: "Reported questions use statement word order, no did." },
+        { q: "Tom said he ___ call me the next day.", o: ["will", "would", "shall", "can't to"], a: 1, why: "Will → would." },
+        { q: "The teacher told us ___ late again.", o: ["not to be", "don't be", "to not being", "not be"], a: 0, why: "A reported command: told + object + (not) to + verb." },
+        { q: "She ___ that she had made a mistake.", o: ["admitted", "told", "said me", "asked"], a: 0, why: "Admit + that. Told needs an object (told me that); said me is wrong." }
+      ]
+    },
+    {
+      id: "questions",
+      group: "passive",
+      title: "Indirect questions and question tags",
+      rule: "Indirect questions sound more polite: Could you tell me where the station is? After the opening phrase, use statement word order and no do / does / did. Yes / no questions use if or whether: Do you know if the shop is open? Question tags repeat the auxiliary with the opposite polarity: It's cold, isn't it? You didn't call, did you?",
+      ielts: "Useful in Speaking when you need clarification: Could you tell me what … means?",
+      quiz: [
+        { q: "Could you tell me what time ___?", o: ["does the library open", "the library opens", "opens the library", "did the library open"], a: 1, why: "Indirect question: statement word order, no does." },
+        { q: "Do you know ___ the exam is on Saturday?", o: ["does", "if", "what", "is"], a: 1, why: "A yes / no indirect question: if or whether." },
+        { q: "You're from Moscow, ___?", o: ["isn't it", "aren't you", "don't you", "weren't you"], a: 1, why: "Positive sentence with are → negative tag aren't you." },
+        { q: "She didn't pass the test, ___?", o: ["didn't she", "did she", "does she", "wasn't she"], a: 1, why: "Negative sentence → positive tag did she." },
+        { q: "I wonder why ___ so expensive.", o: ["is London", "London is", "does London", "London does be"], a: 1, why: "Statement word order after I wonder why." }
+      ]
+    },
+    {
+      id: "quantifiers",
+      group: "nouns",
+      title: "Countable, uncountable, quantifiers",
+      rule: "Uncountable nouns have no plural and no a / an: information, advice, research, evidence, equipment, accommodation, news, traffic, knowledge. Many / (a) few / fewer + countable; much / (a) little / less + uncountable; a lot of, some, any, most + both. A few / a little = some; few / little = not enough.",
+      ielts: "Research, advice, information and evidence are very common in Task 2 — and very often written with -s by mistake. In Task 1: fewer people, less money.",
+      quiz: [
+        { q: "Can you give me some ___ about the visa process?", o: ["advices", "advice", "an advice", "advise"], a: 1, why: "Advice is uncountable: no -s, no an. Advise is the verb." },
+        { q: "There were ___ cars on the road than last year.", o: ["less", "fewer", "little", "much"], a: 1, why: "Cars are countable: fewer." },
+        { q: "Recent ___ shows that exercise improves memory.", o: ["researches", "research", "a research", "many research"], a: 1, why: "Research is uncountable and takes a singular verb (shows)." },
+        { q: "I have ___ time, so let's have a quick coffee.", o: ["a little", "a few", "few", "many"], a: 0, why: "Time (uncountable) + some = a little." },
+        { q: "How ___ luggage do you have?", o: ["many", "much", "few", "lots"], a: 1, why: "Luggage is uncountable: how much." }
+      ]
+    },
+    {
+      id: "agreement",
+      group: "nouns",
+      title: "Subject–verb agreement",
+      rule: "The verb agrees with the main noun of the subject, not the nearest noun: The number of students has risen (the number = singular), but A number of students have complained (= several, plural). Everyone, each, every, nobody take a singular verb. Uncountable nouns are singular: The news is good. Two subjects joined by and are plural.",
+      ielts: "Task 1 is full of the number of, the proportion of, the percentage of — all singular.",
+      quiz: [
+        { q: "The number of tourists ___ doubled since 2010.", o: ["have", "has", "are", "were"], a: 1, why: "The number (singular) is the subject: has." },
+        { q: "A number of residents ___ about the noise.", o: ["has complained", "have complained", "complains", "is complaining"], a: 1, why: "A number of = several: plural verb." },
+        { q: "Everyone in my family ___ English.", o: ["speak", "speaks", "are speaking", "have spoken"], a: 1, why: "Everyone takes a singular verb." },
+        { q: "The proportion of women in senior roles ___ increasing.", o: ["is", "are", "were", "have"], a: 0, why: "The proportion (singular) is the subject, not women." },
+        { q: "The information on these websites ___ not always reliable.", o: ["are", "is", "were", "have been"], a: 1, why: "Information is uncountable: singular verb." }
+      ]
+    },
+    {
+      id: "participle",
+      group: "clauses",
+      title: "Participle clauses",
+      rule: "Participle clauses make sentences shorter and more formal. -ing = active, or at the same time (Feeling tired, I went to bed). Past participle = passive (Built in 1890, the bridge is a landmark). Having + past participle = an earlier action (Having finished the test, she left). Reduced relative clauses: the people living here = who live here; the goods produced = which are produced.",
+      ielts: "Great for Task 1 processes and maps: The grapes, picked by hand, are then…; Located in the north, the park…",
+      quiz: [
+        { q: "___ in 1889, the Eiffel Tower is now a symbol of Paris.", o: ["Building", "Built", "Having built", "To build"], a: 1, why: "The tower was built (passive): past participle." },
+        { q: "___ her homework, she went out with friends.", o: ["Having finished", "Finished", "Being finished", "To finish"], a: 0, why: "An earlier action: having + past participle." },
+        { q: "Most of the people ___ in the survey were under 30.", o: ["interviewing", "interviewed", "who interviewed", "interview"], a: 1, why: "The people were interviewed (passive): interviewed = who were interviewed." },
+        { q: "___ along the river, we saw an old castle.", o: ["Walked", "Walking", "Walk", "To be walking"], a: 1, why: "At the same time, active: -ing." },
+        { q: "Students ___ to study abroad should apply early.", o: ["wishing", "wished", "who wishing", "wish"], a: 0, why: "Wishing = who wish (active)." }
+      ]
+    },
+    {
+      id: "contrast",
+      group: "linking",
+      title: "Contrast: although, despite, whereas",
+      rule: "Although / even though / though + clause. Despite / in spite of + noun or -ing (despite the rain, despite being tired). Despite the fact that + clause. However, nevertheless and on the other hand start a new sentence. Whereas / while compare two facts (Men preferred football, whereas women…). Even though is stronger than although.",
+      ielts: "Task 1 comparisons and Task 2 balanced arguments both depend on contrast — and on the right grammar after each linker.",
+      quiz: [
+        { q: "___ being the cheapest option, the bus was the least popular.", o: ["Although", "Despite", "Even though", "However"], a: 1, why: "-ing follows: despite. Although needs a full clause." },
+        { q: "___ the fact that prices rose, sales continued to grow.", o: ["Although", "Despite", "In spite", "Whereas"], a: 1, why: "Despite the fact that + clause. In spite needs of." },
+        { q: "In 2000, 60% of households had a landline, ___ only 10% had one in 2020.", o: ["despite", "whereas", "however", "in spite of"], a: 1, why: "Comparing two facts in one sentence: whereas." },
+        { q: "The plan was expensive. ___, the council approved it.", o: ["Nevertheless", "Although", "Despite", "Whereas"], a: 0, why: "Contrast with the previous sentence: Nevertheless + comma." },
+        { q: "___ he had lived in London for years, he had never been to the British Museum.", o: ["Even though", "Despite", "In spite of", "However"], a: 0, why: "A full clause follows: even though." }
+      ]
+    },
+    {
+      id: "so-such",
+      group: "describe",
+      title: "So, such, too, enough",
+      rule: "So + adjective / adverb (so expensive, so quickly); such (a / an) + (adjective) + noun (such a long day, such expensive flats). Too + adjective = more than needed, often with a negative result (too small to live in). Adjective + enough; enough + noun (old enough, enough money).",
+      ielts: "Speaking Part 2: It was such an amazing experience that… — a natural way to add emphasis.",
+      quiz: [
+        { q: "It was ___ interesting lecture that nobody left early.", o: ["so", "such an", "such", "so an"], a: 1, why: "Such + a / an + adjective + noun." },
+        { q: "The coffee was ___ hot to drink.", o: ["so", "too", "enough", "such"], a: 1, why: "More than is good, with to + verb: too." },
+        { q: "He isn't old ___ to vote.", o: ["too", "enough", "so", "such"], a: 1, why: "Adjective + enough." },
+        { q: "The flats were ___ expensive that we couldn't afford one.", o: ["such", "so", "too", "enough"], a: 1, why: "So + adjective + that." },
+        { q: "We don't have ___ to buy a house yet.", o: ["money enough", "enough money", "too money", "so money"], a: 1, why: "Enough comes before a noun." }
+      ]
+    },
+    {
+      id: "trends",
+      group: "describe",
+      title: "Describing trends and numbers",
+      rule: "Verb + adverb: rose sharply, fell slightly, increased steadily, fluctuated wildly. Adjective + noun: a sharp rise, a slight fall, a steady increase. Prepositions: rose by 10% (the difference), rose to 50% (the final figure), from 20% to 50%, peaked at 30% (a point), a rise of 10% (noun + of). Approximation: approximately, roughly, just over, nearly, well below.",
+      ielts: "Band 7 in Task 1 needs accurate trend language and variety — mix the verb pattern and the noun pattern.",
+      quiz: [
+        { q: "Sales rose ___ 15% in 2019, reaching 2 million units.", o: ["to", "by", "at", "of"], a: 1, why: "The size of the change: by." },
+        { q: "Unemployment fell ___ 8% to 5%.", o: ["since", "from", "at", "of"], a: 1, why: "From … to … shows the start and the end." },
+        { q: "There was a ___ increase in prices in the final quarter.", o: ["sharply", "sharp", "sharpness", "sharpen"], a: 1, why: "Before a noun (increase), use an adjective." },
+        { q: "The price of oil peaked ___ $120 a barrel.", o: ["by", "at", "on", "to"], a: 1, why: "A point on the graph: peaked at." },
+        { q: "The number of visitors ___ dramatically over the decade.", o: ["increased", "was increase", "rise", "has rose"], a: 0, why: "Verb + adverb: increased dramatically. The number is singular, so rise is wrong." }
+      ]
+    },
+    {
+      id: "prep-time-place",
+      group: "linking",
+      title: "Prepositions of time and place",
+      rule: "Time: at + clock times and holidays (at 5 pm, at the weekend — British), on + days and dates (on Monday, on 3 October), in + months, years, seasons and parts of the day (in 2020, in the morning). Place: at a point (at the station), on a surface or line (on the wall, on the coast), in an enclosed space or area (in the room, in Paris). During + noun, for + a period, by = not later than, until = up to.",
+      ielts: "Task 1 maps and Speaking Part 1 (Where do you live?) need accurate prepositions of place.",
+      quiz: [
+        { q: "The exam is ___ 23 January.", o: ["in", "on", "at", "by"], a: 1, why: "A date: on." },
+        { q: "I was born ___ 1999.", o: ["on", "at", "in", "by"], a: 2, why: "A year: in." },
+        { q: "The new hospital was built ___ the north of the city.", o: ["at", "on", "in", "into"], a: 2, why: "An area inside the city: in the north of." },
+        { q: "Please send me the essay ___ Friday at the latest.", o: ["until", "by", "during", "in"], a: 1, why: "A deadline (not later than): by." },
+        { q: "I fell asleep ___ the film.", o: ["while", "during", "for", "since"], a: 1, why: "During + noun. While needs a clause (while I was watching…)." }
+      ]
+    },
+    {
+      id: "dep-prep",
+      group: "linking",
+      title: "Dependent prepositions",
+      rule: "Many nouns, adjectives and verbs need a fixed preposition — learn them as chunks: interested in, responsible for, aware of, similar to, different from, good at; depend on, rely on, contribute to, focus on, consist of, suffer from; a reason for, an increase in, the cause of, access to, an impact on, demand for.",
+      ielts: "Task 2 uses these constantly: an impact on, access to, responsible for. Wrong prepositions are a typical B1–B2 error.",
+      quiz: [
+        { q: "Social media has a huge impact ___ young people.", o: ["in", "on", "to", "for"], a: 1, why: "An impact on." },
+        { q: "There has been a sharp increase ___ house prices.", o: ["of", "in", "on", "at"], a: 1, why: "An increase in + the thing that grows (an increase of + the amount: of 10%)." },
+        { q: "Many students depend ___ their parents for money.", o: ["of", "from", "on", "to"], a: 2, why: "Depend on." },
+        { q: "Everyone should have access ___ clean water.", o: ["for", "to", "at", "of"], a: 1, why: "Access to." },
+        { q: "Who is responsible ___ this project?", o: ["of", "to", "for", "about"], a: 2, why: "Responsible for." }
+      ]
+    },
+    {
+      id: "inversion",
+      group: "academic",
+      title: "Inversion for emphasis",
+      rule: "After a negative or limiting expression at the start of a sentence, use question word order: Never have I seen… / Not only does it save time, but it also… / Rarely do people… / Only then did I realise… / Under no circumstances should… Formal conditionals also invert: Had I known… (= If I had known), Should you need help… (= If you need help).",
+      ielts: "One or two inversions in Task 2 or Speaking Part 3 show Band 7+ range — don't overuse them.",
+      quiz: [
+        { q: "Not only ___ cheaper, but it is also faster.", o: ["the train is", "is the train", "does the train", "the train be"], a: 1, why: "Not only at the start: question word order (is the train)." },
+        { q: "Never ___ such a beautiful sunset.", o: ["I have seen", "have I seen", "I saw", "did I saw"], a: 1, why: "Never at the start: have I seen." },
+        { q: "Rarely ___ people admit their mistakes.", o: ["do", "are", "have", "does"], a: 0, why: "Present Simple → do + subject + verb (people = plural)." },
+        { q: "___ I known about the strike, I would have taken a taxi.", o: ["If", "Had", "Have", "Should"], a: 1, why: "Had I known = If I had known (third conditional)." },
+        { q: "Only after the results came out ___ how well she had done.", o: ["she realised", "did she realise", "she did realise", "realised she"], a: 1, why: "Only after … : inversion with did." }
+      ]
+    },
+    {
+      id: "cleft",
+      group: "academic",
+      title: "Cleft sentences",
+      rule: "Cleft sentences put the focus on one part of the sentence. It + be + focus + that / who: It was my teacher who encouraged me (not my parents). What + clause + be: What I enjoy most is travelling. What surprised me was the price. Also: All I want is…, The reason why… is that…, The thing that…",
+      ielts: "Very natural in Speaking: What I like most about my city is… — an easy way to show range.",
+      quiz: [
+        { q: "___ I love about Paris is the architecture.", o: ["That", "What", "Which", "It"], a: 1, why: "What + clause + be." },
+        { q: "It was the price ___ surprised me most.", o: ["what", "that", "where", "when"], a: 1, why: "It was … that." },
+        { q: "What I need ___ a good night's sleep.", o: ["are", "is", "being", "to be"], a: 1, why: "A what-clause is singular: is." },
+        { q: "___ was only when I moved abroad that I understood my parents.", o: ["What", "It", "This", "There"], a: 1, why: "It was only when … that …" },
+        { q: "The reason ___ I chose this course is that it includes an internship.", o: ["why", "because", "what", "for"], a: 0, why: "The reason why … is that …" }
+      ]
+    },
+    {
+      id: "nominal",
+      group: "academic",
+      title: "Nominalisation (academic style)",
+      rule: "Academic writing often turns verbs and adjectives into nouns: increase → an increase, develop → the development of, fail → failure, able → the ability to, important → the importance of. Instead of 'Prices increased quickly, and this worried people', write 'The rapid increase in prices caused concern'. Adjectives then describe the noun: a rapid increase, a significant decline.",
+      ielts: "Nominalisation makes Task 2 sound academic and helps you avoid repetition. Use it in moderation — clarity comes first.",
+      quiz: [
+        { q: "The ___ of new technology has changed the way we work.", o: ["introduce", "introduction", "introducing of", "introduced"], a: 1, why: "After the, you need a noun: introduction." },
+        { q: "There has been a significant ___ in the crime rate.", o: ["reduce", "reduction", "reducing", "reduced"], a: 1, why: "A + adjective + noun: a significant reduction." },
+        { q: "The government's ___ to act has been widely criticised.", o: ["fail", "fails", "failure", "failed"], a: 2, why: "Possessive + noun: the government's failure." },
+        { q: "Many people underestimate the ___ of sleep.", o: ["important", "importance", "importantly", "import"], a: 1, why: "The + noun + of: the importance of." },
+        { q: "Which sentence sounds most academic?", o: ["Lots of people moved to cities, so cities grew fast.", "The mass migration to cities led to rapid urban growth.", "Cities got really big because people moved there.", "People moved, and cities grew."], a: 1, why: "Nouns (migration, growth) and precise adjectives make the style academic." }
+      ]
+    },
+    {
+      id: "hedging",
+      group: "academic",
+      title: "Hedging and cautious language",
+      rule: "Academic writers avoid absolute claims. Use modal verbs (may, might, could), adverbs (possibly, probably, arguably, generally), verbs (tend to, appear to, seem to, suggest) and phrases (It could be argued that…, There is some evidence that…, To some extent…). Avoid always, never and everyone unless you are sure.",
+      ielts: "Hedging shows a mature, balanced position in Task 2, and it helps in Speaking Part 3 when you aren't sure.",
+      quiz: [
+        { q: "Which is the most cautious claim?", o: ["Social media destroys teenagers' mental health.", "Social media may have a negative effect on some teenagers.", "Social media always harms teenagers.", "Everyone agrees that social media is bad."], a: 1, why: "May + some = a careful, academic claim." },
+        { q: "Young people ___ to spend more time online than older generations.", o: ["tend", "are tend", "tends", "tending"], a: 0, why: "Tend to + verb (young people = plural)." },
+        { q: "It could be ___ that online learning is less effective for young children.", o: ["argue", "argued", "arguing", "to argue"], a: 1, why: "It could be argued that… (passive)." },
+        { q: "The results ___ that the new method is effective.", o: ["are suggest", "suggest", "suggesting", "suggests to"], a: 1, why: "Suggest that… is a cautious reporting verb." },
+        { q: "This is ___ the most important problem facing cities today.", o: ["arguable", "arguably", "argue", "argued"], a: 1, why: "An adverb before the superlative: arguably." }
       ]
     }
   ],
@@ -395,8 +729,53 @@ window.CONTENT = {
     "comparisons":  { egu: [105, 106, 107, 108], supp: "166–168 (pp. 104–105)", drz: "The Adjective, section 3, pp. 253–260" },
     "modals":       { egu: [26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37], supp: "65–87 (pp. 41–52)", drz: "Modal Verbs, pp. 95–125" },
     "gerund":       { egu: [53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68], supp: "132–143 (pp. 82–91)", drz: "The Gerund, pp. 283–301; The Infinitive, pp. 302–333" },
-    "linking":      { egu: [113, 114, 115, 116, 117, 118, 119, 120], supp: "", drz: "2.5 Adverbial Clauses, pp. 389–398", extra: "Vocabulary in Use Upper-Int, units 61–68 (linking words)" }
+    "linking":      { egu: [113, 114, 115, 116, 117, 118, 119, 120], supp: "", drz: "2.5 Adverbial Clauses, pp. 389–398", extra: "Vocabulary in Use Upper-Int, units 61–68 (linking words)" },
+    "pres-simple-cont": { egu: [1, 2, 3, 4], supp: "1–10 (pp. 2–6)", drz: "5.1, p. 23; 6.1–6.2, pp. 36–41" },
+    "future-perf":  { egu: [24, 25], supp: "64 (p. 40)", drz: "6.5 Future Continuous, p. 47; 8.4 Future Perfect, p. 73" },
+    "used-to":      { egu: [18, 36, 61], supp: "47–51 (pp. 30–32), 141 (p. 87)" },
+    "deduction":    { egu: [27, 28, 29, 30], supp: "67–72 (pp. 42–44)", drz: "Can 2.1, p. 99; May 3.1, p. 103; Must 4.1, p. 109" },
+    "obligation":   { egu: [31, 32, 33, 34, 35], supp: "73–85 (pp. 45–51)", drz: "Must, p. 106; Should and Ought to, p. 114; Need, p. 117" },
+    "cond-mixed":   { egu: [38, 40], supp: "94–99 (pp. 56–59)", drz: "Conditional Sentences, pp. 165–175" },
+    "wish":         { egu: [39, 41], supp: "100–102 (pp. 60–62)", drz: "Making a Wish, pp. 175–180" },
+    "unless":       { egu: [25, 114, 115], drz: "2.5 Adverbial Clauses, pp. 389–398" },
+    "causative":    { egu: [45, 46], supp: "114–115 (p. 71)", drz: "Have Something Done, p. 345; Complex Subject, p. 314" },
+    "reported":     { egu: [47, 48, 50], supp: "121–131 (pp. 75–81)", drz: "Sequence of Tenses, pp. 146–152; Indirect Speech, pp. 153–161" },
+    "questions":    { egu: [49, 50, 51, 52], supp: "116–120 (pp. 72–74)", drz: "Questions and Negatives, p. 140; Indirect Questions, p. 156" },
+    "quantifiers":  { egu: [69, 70, 71, 85, 86, 87, 88], supp: "144–148 (pp. 92–93), 155–159 (pp. 97–99)", drz: "Much/Many, Little/Few, p. 243", extra: "Vocabulary in Use Upper-Int, units 83, 85, 86 (uncountable nouns)" },
+    "agreement":    { egu: [79, 88, 91], drz: "The Category of Number, p. 187" },
+    "participle":   { egu: [68, 97], supp: "160–163 (pp. 100–102)", drz: "Functions of the Participle, p. 336" },
+    "contrast":     { egu: [113], drz: "2.5 Adverbial Clauses, pp. 389–398", extra: "Vocabulary in Use Upper-Int, unit 64 (concession and contrast)" },
+    "so-such":      { egu: [102, 103], drz: "Adverbs of Degree, p. 273" },
+    "trends":       { extra: "Vocabulary in Use Upper-Int, unit 51; Vocabulary in Use Advanced, unit 71 (statistics)" },
+    "prep-time-place": { egu: [119, 120, 121, 122, 123, 124, 125, 126], supp: "173–177 (pp. 108–110)", drz: "Prepositions of Place, p. 351; of Time, p. 364" },
+    "dep-prep":     { egu: [129, 130, 131, 132, 133, 134, 135, 136], supp: "178–182 (pp. 111–112)", drz: "Prepositions in Set Expressions, p. 374" },
+    "inversion":    { note: "Not in Murphy’s intermediate book — it’s a Band 7+ structure. Use the British Council link below." },
+    "cleft":        { drz: "Emphasis: It is … that, p. 402; It is not until … that, p. 403" },
+    "nominal":      { drz: "Formation of Nouns, p. 181", extra: "Vocabulary in Use Upper-Int, units 70, 73; Advanced, unit 87" },
+    "hedging":      { egu: [29, 30, 45], extra: "Vocabulary in Use Advanced, units 79–80 (academic writing)" }
   },
+
+  /* How the Grammar tab groups the topics, and their order */
+  grammarGroups: [
+    { id: "tenses", title: "Tenses" },
+    { id: "modals", title: "Modal verbs" },
+    { id: "cond", title: "Conditionals and wishes" },
+    { id: "passive", title: "Passive and reporting" },
+    { id: "clauses", title: "Verb patterns and clauses" },
+    { id: "nouns", title: "Nouns and quantity" },
+    { id: "describe", title: "Describing and comparing" },
+    { id: "linking", title: "Linking and prepositions" },
+    { id: "academic", title: "Band 7+ academic style" }
+  ],
+  grammarOrder: ["pres-simple-cont", "pp-ps", "ppc", "narrative", "used-to", "future", "future-perf",
+    "modals", "obligation", "deduction",
+    "conditionals", "cond-mixed", "wish", "unless",
+    "passive", "causative", "reported", "questions",
+    "gerund", "relative", "participle",
+    "articles", "quantifiers", "agreement",
+    "comparisons", "so-such", "trends",
+    "linking", "contrast", "prep-time-place", "dep-prep",
+    "hedging", "nominal", "cleft", "inversion"],
 
   /* Engnovate: tests and checkers (some features are paid) */
   engnovate: [
